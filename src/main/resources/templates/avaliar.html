@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Avaliar produto')}"></head>
+<body>
+<header th:replace="~{fragments :: topo}"></header>
+<main>
+  <div th:replace="~{fragments :: mensagens}"></div>
+  <section class="painel" style="max-width:520px;margin:0 auto">
+    <h1>Avaliar produto</h1>
+    <p><strong th:text="${item.variacao.produto.nome}"></strong>
+       <small th:text="${item.variacao.descricao}"></small></p>
+    <form th:action="@{/avaliacoes}" th:object="${form}" method="post" class="formulario">
+      <input type="hidden" th:field="*{itemPedidoId}">
+      <div>
+        <label for="nota">Nota</label>
+        <select th:field="*{nota}">
+          <option value="5">5 - Excelente</option>
+          <option value="4">4 - Bom</option>
+          <option value="3">3 - Regular</option>
+          <option value="2">2 - Ruim</option>
+          <option value="1">1 - Péssimo</option>
+        </select>
+        <span class="erro" th:if="${#fields.hasErrors('nota')}" th:errors="*{nota}"></span>
+      </div>
+      <div>
+        <label for="comentario">Comentário (opcional)</label>
+        <textarea th:field="*{comentario}" rows="4"></textarea>
+        <span class="erro" th:if="${#fields.hasErrors('comentario')}" th:errors="*{comentario}"></span>
+      </div>
+      <div><button type="submit">Enviar avaliação</button> <a th:href="@{/pedidos}">Cancelar</a></div>
+    </form>
+  </section>
+</main>
+</body>
+</html>

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments :: head(${produto.nome})}"></head>
+<body>
+<header th:replace="~{fragments :: topo}"></header>
+<main>
+  <div th:replace="~{fragments :: mensagens}"></div>
+
+  <section class="painel">
+    <h1 th:text="${produto.nome}">Produto</h1>
+    <p class="loja">Vendido por <strong th:text="${produto.loja.nome}"></strong>, categoria <span th:text="${produto.categoria.nome}"></span></p>
+    <p class="loja" th:if="${media != null}"
+       th:text="'Nota média ' + ${#numbers.formatDecimal(media, 1, 1)} + ' de 5 (' + ${#lists.size(avaliacoes)} + ' avaliações)'"></p>
+    <p th:text="${produto.descricao}"></p>
+    <p class="preco" th:text="${#numbers.formatCurrency(produto.precoBase)}"></p>
+
+    <p class="ajuda" th:if="${produto.variacoes.empty}">Este produto ainda não tem opções disponíveis para compra.</p>
+
+    <form th:if="${!produto.variacoes.empty}" sec:authorize="hasRole('CLIENTE')"
+          th:action="@{/carrinho/itens}" method="post" class="formulario">
+      <input type="hidden" name="produtoId" th:value="${produto.id}">
+      <div>
+        <label for="variacaoId">Opção</label>
+        <select id="variacaoId" name="variacaoId" required>
+          <option th:each="v : ${produto.variacoes}" th:value="${v.id}" th:disabled="${v.estoque == 0}"
+                  th:text="${v.descricao + ' - ' + #numbers.formatCurrency(v.precoFinal) + (v.estoque == 0 ? ' (esgotado)' : ' (' + v.estoque + ' em estoque)')}"></option>
+        </select>
+      </div>
+      <div>
+        <label for="quantidade">Quantidade</label>
+        <input id="quantidade" type="number" name="quantidade" min="1" value="1">
+      </div>
+      <div><button type="submit">Adicionar ao carrinho</button></div>
+    </form>
+    <p sec:authorize="!isAuthenticated()"><a th:href="@{/login}">Entre</a> ou <a th:href="@{/cadastro/cliente}">crie uma conta</a> para comprar.</p>
+    <p class="ajuda" sec:authorize="hasRole('LOJA')">Contas de loja não fazem compras.</p>
+  </section>
+
+  <section class="painel">
+    <h2>Avaliações</h2>
+    <p class="ajuda" th:if="${avaliacoes.empty}">Este produto ainda não foi avaliado.</p>
+    <div th:each="a : ${avaliacoes}">
+      <strong th:text="'Nota ' + ${a.nota} + '/5'"></strong>
+      <small th:text="${#temporals.format(a.criadoEm, 'dd/MM/yyyy')}"></small>
+      <p th:if="${a.comentario != null}" th:text="${a.comentario}"></p>
+    </div>
+  </section>
+</main>
+</body>
+</html>

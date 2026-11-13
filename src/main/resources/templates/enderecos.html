@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Meus endereços')}"></head>
+<body>
+<header th:replace="~{fragments :: topo}"></header>
+<main>
+  <div th:replace="~{fragments :: mensagens}"></div>
+  <h1>Meus endereços</h1>
+  <div class="duas-colunas">
+    <section class="painel">
+      <h2>Endereços cadastrados</h2>
+      <p class="ajuda" th:if="${enderecos.empty}">Você ainda não cadastrou nenhum endereço de entrega.</p>
+      <div th:each="e : ${enderecos}" style="margin-bottom:12px">
+        <strong th:text="${e.tipo.rotulo}"></strong>
+        <div th:text="${e.resumo}"></div>
+        <form th:action="@{/enderecos/{id}/remover(id=${e.id})}" method="post"><button type="submit" class="link">Remover</button></form>
+      </div>
+    </section>
+
+    <section class="painel">
+      <h2>Novo endereço</h2>
+      <form th:action="@{/enderecos}" th:object="${form}" method="post" class="formulario">
+        <div><label for="logradouro">Logradouro</label><input type="text" th:field="*{logradouro}">
+          <span class="erro" th:if="${#fields.hasErrors('logradouro')}" th:errors="*{logradouro}"></span></div>
+        <div><label for="complemento">Complemento</label><input type="text" th:field="*{complemento}"></div>
+        <div><label for="bairro">Bairro</label><input type="text" th:field="*{bairro}">
+          <span class="erro" th:if="${#fields.hasErrors('bairro')}" th:errors="*{bairro}"></span></div>
+        <div><label for="cidade">Cidade</label><input type="text" th:field="*{cidade}">
+          <span class="erro" th:if="${#fields.hasErrors('cidade')}" th:errors="*{cidade}"></span></div>
+        <div><label for="estado">Estado (sigla)</label><input type="text" th:field="*{estado}" maxlength="2">
+          <span class="erro" th:if="${#fields.hasErrors('estado')}" th:errors="*{estado}"></span></div>
+        <div><label for="cep">CEP</label><input type="text" th:field="*{cep}" inputmode="numeric" placeholder="00000-000">
+          <span class="erro" th:if="${#fields.hasErrors('cep')}" th:errors="*{cep}"></span></div>
+        <div><label for="tipo">Tipo</label>
+          <select th:field="*{tipo}"><option th:each="t : ${tipos}" th:value="${t}" th:text="${t.rotulo}"></option></select></div>
+        <div><button type="submit">Salvar endereço</button></div>
+      </form>
+    </section>
+  </div>
+</main>
+</body>
+</html>

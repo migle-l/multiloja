@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Meus pedidos')}"></head>
+<body>
+<header th:replace="~{fragments :: topo}"></header>
+<main>
+  <div th:replace="~{fragments :: mensagens}"></div>
+  <h1>Meus pedidos</h1>
+  <p class="vazio" th:if="${pedidos.empty}">Você ainda não fez pedidos. <a th:href="@{/}">Ver produtos</a></p>
+
+  <article class="painel pedido" th:each="p : ${pedidos}">
+    <header>
+      <h2 th:text="${p.numero}"></h2>
+      <span class="status" th:text="${p.status.rotulo}"></span>
+    </header>
+    <small th:text="${#temporals.format(p.criadoEm, 'dd/MM/yyyy HH:mm')} + ' - Entrega em ' + ${p.endereco.resumo}"></small>
+
+    <div class="tabela" style="margin-top:10px">
+      <table>
+        <thead><tr><th>Produto</th><th>Opção</th><th>Qtd.</th><th>Subtotal</th><th>Avaliação</th></tr></thead>
+        <tbody>
+          <tr th:each="i : ${p.itens}">
+            <td><a th:href="@{/produtos/{id}(id=${i.variacao.produto.id})}" th:text="${i.variacao.produto.nome}"></a></td>
+            <td th:text="${i.variacao.descricao}"></td>
+            <td th:text="${i.quantidade}"></td>
+            <td th:text="${#numbers.formatCurrency(i.subtotal)}"></td>
+            <td th:if="${i.avaliacao != null}" th:text="'Nota ' + ${i.avaliacao.nota} + '/5'"></td>
+            <td th:if="${i.avaliacao == null}"><a th:href="@{/avaliacoes/nova(itemId=${i.id})}">Avaliar</a></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <details>
+      <summary>Pagamentos</summary>
+      <div class="tabela">
+        <table>
+          <thead><tr><th>Código</th><th>Forma</th><th>Valor</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr th:each="pg : ${p.pagamentos}">
+              <td th:text="${pg.codigo}"></td>
+              <td th:text="${pg.forma.rotulo}"></td>
+              <td th:text="${#numbers.formatCurrency(pg.valor)}"></td>
+              <td th:text="${pg.status.rotulo}"></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </details>
+
+    <div class="totais">
+      <div><span>Subtotal</span><span th:text="${#numbers.formatCurrency(p.subtotal)}"></span></div>
+      <div><span>Desconto</span><span th:text="'- ' + ${#numbers.formatCurrency(p.desconto)}"></span></div>
+      <div class="total"><span>Total</span><span th:text="${#numbers.formatCurrency(p.total)}"></span></div>
+    </div>
+  </article>
+</main>
+</body>
+</html>

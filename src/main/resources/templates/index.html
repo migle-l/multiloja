@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Produtos')}"></head>
+<body>
+<header th:replace="~{fragments :: topo}"></header>
+<main>
+  <div th:replace="~{fragments :: mensagens}"></div>
+
+  <form class="filtros" th:action="@{/}" method="get">
+    <input type="search" name="q" th:value="${q}" placeholder="Nome do produto" aria-label="Nome do produto">
+    <select name="lojaId" aria-label="Loja">
+      <option value="">Todas as lojas</option>
+      <option th:each="l : ${lojas}" th:value="${l.id}" th:text="${l.nome}"
+              th:selected="${lojaId != null and lojaId == l.id}"></option>
+    </select>
+    <button type="submit">Filtrar</button>
+  </form>
+
+  <p class="vazio" th:if="${produtos.empty}">Nenhum produto encontrado. Tente outro termo ou escolha outra loja.</p>
+
+  <section class="grade">
+    <a class="card" th:each="p : ${produtos.content}" th:href="@{/produtos/{id}(id=${p.id})}">
+      <h2 th:text="${p.nome}">Produto</h2>
+      <span class="loja" th:text="'Vendido por ' + ${p.loja.nome}"></span>
+      <span class="loja" th:text="${p.categoria.nome}"></span>
+      <span class="preco" th:text="${#numbers.formatCurrency(p.precoBase)}"></span>
+    </a>
+  </section>
+
+  <nav class="paginas" th:if="${produtos.totalPages > 1}" aria-label="Paginação">
+    <a th:if="${produtos.hasPrevious()}" th:href="@{/(q=${q}, lojaId=${lojaId}, pagina=${produtos.number - 1})}">Anterior</a>
+    <span th:text="'Página ' + ${produtos.number + 1} + ' de ' + ${produtos.totalPages}"></span>
+    <a th:if="${produtos.hasNext()}" th:href="@{/(q=${q}, lojaId=${lojaId}, pagina=${produtos.number + 1})}">Próxima</a>
+  </nav>
+</main>
+</body>
+</html>

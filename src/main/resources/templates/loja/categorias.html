@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Categorias')}"></head>
+<body>
+<header th:replace="~{fragments :: topo}"></header>
+<main>
+  <div th:replace="~{fragments :: mensagens}"></div>
+  <h1>Categorias</h1>
+  <div class="duas-colunas">
+    <section class="painel">
+      <h2>Suas categorias</h2>
+      <p class="ajuda" th:if="${categorias.empty}">Nenhuma categoria ainda. Crie a primeira ao lado.</p>
+      <div th:each="c : ${categorias}" style="margin-bottom:10px">
+        <strong th:text="${c.nome}"></strong>
+        <div class="ajuda" th:text="${c.descricao}"></div>
+      </div>
+    </section>
+    <section class="painel">
+      <h2>Nova categoria</h2>
+      <form th:action="@{/loja/categorias}" th:object="${form}" method="post" class="formulario">
+        <div><label for="nome">Nome</label><input type="text" th:field="*{nome}">
+          <span class="erro" th:if="${#fields.hasErrors('nome')}" th:errors="*{nome}"></span></div>
+        <div><label for="descricao">Descrição</label><input type="text" th:field="*{descricao}"></div>
+        <div><button type="submit">Criar categoria</button></div>
+      </form>
+    </section>
+  </div>
+</main>
+</body>
+</html>

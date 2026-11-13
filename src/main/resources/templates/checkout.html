@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Finalizar pedido')}"></head>
+<body>
+<header th:replace="~{fragments :: topo}"></header>
+<main>
+  <div th:replace="~{fragments :: mensagens}"></div>
+  <h1>Finalizar pedido</h1>
+  <div class="duas-colunas">
+    <form th:action="@{/checkout}" th:object="${checkout}" method="post">
+      <fieldset>
+        <legend>Endereço de entrega</legend>
+        <label class="opcao" th:each="e : ${enderecos}">
+          <input type="radio" th:field="*{enderecoId}" th:value="${e.id}">
+          <span th:text="${e.resumo}"></span>
+        </label>
+        <span class="erro" th:if="${#fields.hasErrors('enderecoId')}" th:errors="*{enderecoId}"></span>
+        <a th:href="@{/enderecos}">Cadastrar outro endereço</a>
+      </fieldset>
+
+      <fieldset>
+        <legend>Pagamento</legend>
+        <p class="ajuda">Você pode dividir o valor entre duas formas de pagamento. A soma deve ser igual ao total.
+          Cartões são aprovados na hora; Pix e boleto ficam pendentes até a loja confirmar.</p>
+        <div class="linha-pag">
+          <select th:field="*{pagamentos[0].forma}" aria-label="Forma de pagamento 1">
+            <option th:each="f : ${formas}" th:value="${f}" th:text="${f.rotulo}"></option>
+          </select>
+          <input type="number" step="0.01" min="0" th:field="*{pagamentos[0].valor}" aria-label="Valor 1">
+        </div>
+        <div class="linha-pag">
+          <select th:field="*{pagamentos[1].forma}" aria-label="Forma de pagamento 2">
+            <option value="">Sem segunda forma</option>
+            <option th:each="f : ${formas}" th:value="${f}" th:text="${f.rotulo}"></option>
+          </select>
+          <input type="number" step="0.01" min="0" th:field="*{pagamentos[1].valor}" aria-label="Valor 2">
+        </div>
+      </fieldset>
+      <button type="submit">Confirmar pedido</button>
+    </form>
+
+    <section class="painel">
+      <h2>Resumo</h2>
+      <div th:each="i : ${carrinho.itens}">
+        <span th:text="${i.quantidade} + 'x ' + ${i.variacao.produto.nome} + ' (' + ${i.variacao.descricao} + ')'"></span>
+        <strong style="float:right" th:text="${#numbers.formatCurrency(i.subtotal)}"></strong>
+      </div>
+      <div class="totais" style="margin-top:12px">
+        <div><span>Subtotal</span><span th:text="${#numbers.formatCurrency(carrinho.subtotal)}"></span></div>
+        <div><span>Desconto</span><span th:text="'- ' + ${#numbers.formatCurrency(carrinho.desconto)}"></span></div>
+        <div class="total"><span>Total</span><span th:text="${#numbers.formatCurrency(carrinho.total)}"></span></div>
+      </div>
+    </section>
+  </div>
+</main>
+</body>
+</html>

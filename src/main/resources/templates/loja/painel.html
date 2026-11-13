@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments :: head('Painel da loja')}"></head>
+<body>
+<header th:replace="~{fragments :: topo}"></header>
+<main>
+  <div th:replace="~{fragments :: mensagens}"></div>
+  <h1>Painel da loja</h1>
+  <nav class="atalhos">
+    <a th:href="@{/loja/produtos}"><strong th:text="${totalProdutos}">0</strong>Produtos</a>
+    <a th:href="@{/loja/categorias}"><strong th:text="${totalCategorias}">0</strong>Categorias</a>
+    <a th:href="@{/loja/cupons}"><strong th:text="${totalCupons}">0</strong>Cupons</a>
+    <a th:href="@{/loja/pedidos}"><strong th:text="${totalPedidos}">0</strong>Pedidos</a>
+  </nav>
+  <p class="ajuda" style="margin-top:18px">Para começar a vender: crie uma categoria, cadastre um produto e adicione as variações (cor/tamanho) com o estoque de cada uma.</p>
+</main>
+</body>
+</html>

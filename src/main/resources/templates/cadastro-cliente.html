@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Criar conta')}"></head>
+<body>
+<header th:replace="~{fragments :: topo}"></header>
+<main>
+  <div th:replace="~{fragments :: mensagens}"></div>
+  <section class="painel" style="max-width:520px;margin:0 auto">
+    <h1>Criar conta de cliente</h1>
+    <form th:action="@{/cadastro/cliente}" th:object="${form}" method="post" class="formulario">
+      <div><label for="cpf">CPF</label><input type="text" th:field="*{cpf}" inputmode="numeric" placeholder="000.000.000-00">
+        <span class="erro" th:if="${#fields.hasErrors('cpf')}" th:errors="*{cpf}"></span></div>
+      <div><label for="nome">Nome completo</label><input type="text" th:field="*{nome}">
+        <span class="erro" th:if="${#fields.hasErrors('nome')}" th:errors="*{nome}"></span></div>
+      <div><label for="email">E-mail</label><input type="email" th:field="*{email}">
+        <span class="erro" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span></div>
+      <div><label for="telefone">Telefone</label><input type="text" th:field="*{telefone}" inputmode="tel">
+        <span class="erro" th:if="${#fields.hasErrors('telefone')}" th:errors="*{telefone}"></span></div>
+      <div><label for="senha">Senha (mínimo 8 caracteres)</label><input type="password" th:field="*{senha}">
+        <span class="erro" th:if="${#fields.hasErrors('senha')}" th:errors="*{senha}"></span></div>
+      <div><label for="confirmacaoSenha">Confirmar senha</label><input type="password" th:field="*{confirmacaoSenha}">
+        <span class="erro" th:if="${#fields.hasErrors('confirmacaoSenha')}" th:errors="*{confirmacaoSenha}"></span></div>
+      <div><button type="submit">Criar conta</button></div>
+    </form>
+  </section>
+</main>
+</body>
+</html>

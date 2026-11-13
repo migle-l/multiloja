@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Meus produtos')}"></head>
+<body>
+<header th:replace="~{fragments :: topo}"></header>
+<main>
+  <div th:replace="~{fragments :: mensagens}"></div>
+  <h1>Meus produtos</h1>
+  <p><a class="botao" th:href="@{/loja/produtos/novo}">Novo produto</a></p>
+  <p class="vazio" th:if="${produtos.empty}">Você ainda não cadastrou produtos.</p>
+  <div class="tabela" th:unless="${produtos.empty}">
+    <table>
+      <thead><tr><th>Código</th><th>Nome</th><th>Categoria</th><th>Preço base</th><th>Estoque nas variações</th><th>Vitrine</th><th></th></tr></thead>
+      <tbody>
+        <tr th:each="p : ${produtos}">
+          <td th:text="${p.codigo}"></td>
+          <td th:text="${p.nome}"></td>
+          <td th:text="${p.categoria.nome}"></td>
+          <td th:text="${#numbers.formatCurrency(p.precoBase)}"></td>
+          <td th:text="${p.estoqueVariacoes}"></td>
+          <td th:text="${p.ativo} ? 'Visível' : 'Oculto'"></td>
+          <td><a th:href="@{/loja/produtos/{id}(id=${p.id})}">Gerenciar</a></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</main>
+</body>
+</html>

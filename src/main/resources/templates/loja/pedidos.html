@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Pedidos da loja')}"></head>
+<body>
+<header th:replace="~{fragments :: topo}"></header>
+<main>
+  <div th:replace="~{fragments :: mensagens}"></div>
+  <h1>Pedidos recebidos</h1>
+  <p class="vazio" th:if="${pedidos.empty}">Nenhum pedido com produtos da sua loja ainda.</p>
+
+  <article class="painel pedido" th:each="p : ${pedidos}">
+    <header>
+      <h2 th:text="${p.numero}"></h2>
+      <span class="status" th:text="${p.status.rotulo}"></span>
+    </header>
+    <small th:text="${#temporals.format(p.criadoEm, 'dd/MM/yyyy HH:mm')} + ' - ' + ${p.cliente.nome}"></small><br>
+    <small th:text="'Entrega: ' + ${p.endereco.resumo}"></small>
+
+    <div class="tabela" style="margin-top:10px">
+      <table>
+        <thead><tr><th>Produto</th><th>Opção</th><th>Qtd.</th><th>Subtotal</th></tr></thead>
+        <tbody>
+          <tr th:each="i : ${p.itens}" th:if="${i.variacao.produto.loja.id == lojaId}">
+            <td th:text="${i.variacao.produto.nome}"></td>
+            <td th:text="${i.variacao.descricao}"></td>
+            <td th:text="${i.quantidade}"></td>
+            <td th:text="${#numbers.formatCurrency(i.subtotal)}"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>
+      <span th:each="pg : ${p.pagamentos}" th:text="${pg.forma.rotulo} + ' ' + ${#numbers.formatCurrency(pg.valor)} + ' (' + ${pg.status.rotulo} + ')  '"></span>
+    </p>
+
+    <form th:if="${p.status.name() == 'AGUARDANDO_PAGAMENTO'}" th:action="@{/loja/pedidos/{id}/confirmar-pagamento(id=${p.id})}" method="post">
+      <button type="submit">Confirmar pagamento</button>
+    </form>
+    <form th:if="${p.status.name() == 'PAGO'}" th:action="@{/loja/pedidos/{id}/enviar(id=${p.id})}" method="post">
+      <button type="submit">Marcar como enviado</button>
+    </form>
+    <form th:if="${p.status.name() == 'ENVIADO'}" th:action="@{/loja/pedidos/{id}/entregar(id=${p.id})}" method="post">
+      <button type="submit">Marcar como entregue</button>
+    </form>
+  </article>
+</main>
+</body>
+</html>

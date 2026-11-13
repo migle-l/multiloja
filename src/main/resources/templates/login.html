@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Entrar')}"></head>
+<body>
+<header th:replace="~{fragments :: topo}"></header>
+<main>
+  <div th:replace="~{fragments :: mensagens}"></div>
+  <section class="painel" style="max-width:420px;margin:0 auto">
+    <h1>Entrar</h1>
+    <p class="aviso erro" role="alert" th:if="${param.error}">E-mail ou senha incorretos.</p>
+    <form th:action="@{/login}" method="post" class="formulario">
+      <div><label for="username">E-mail</label><input id="username" name="username" type="email" required autofocus></div>
+      <div><label for="password">Senha</label><input id="password" name="password" type="password" required></div>
+      <div><button type="submit">Entrar</button></div>
+    </form>
+    <p class="ajuda">Ainda não tem conta? <a th:href="@{/cadastro/cliente}">Criar conta de cliente</a> ou <a th:href="@{/cadastro/loja}">cadastrar minha loja</a>.</p>
+  </section>
+</main>
+</body>
+</html>

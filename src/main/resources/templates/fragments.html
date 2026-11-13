@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:fragment="head(titulo)">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title th:text="${titulo} + ' - Multiloja'">Multiloja</title>
+  <link rel="stylesheet" th:href="@{/css/estilo.css}">
+</head>
+<body>
+
+<header class="topo" th:fragment="topo">
+  <a class="marca" th:href="@{/}">Multiloja</a>
+  <form class="busca" th:action="@{/}" method="get" role="search">
+    <input type="search" name="q" placeholder="Buscar produtos" aria-label="Buscar produtos">
+    <button type="submit">Buscar</button>
+  </form>
+  <nav>
+    <th:block sec:authorize="!isAuthenticated()">
+      <a th:href="@{/login}">Entrar</a>
+      <a th:href="@{/cadastro/cliente}">Criar conta</a>
+      <a th:href="@{/cadastro/loja}">Vender</a>
+    </th:block>
+    <th:block sec:authorize="hasRole('CLIENTE')">
+      <a th:href="@{/carrinho}">Carrinho</a>
+      <a th:href="@{/pedidos}">Meus pedidos</a>
+      <a th:href="@{/enderecos}">Endereços</a>
+    </th:block>
+    <th:block sec:authorize="hasRole('LOJA')">
+      <a th:href="@{/loja}">Painel da loja</a>
+    </th:block>
+    <form sec:authorize="isAuthenticated()" th:action="@{/logout}" method="post">
+      <button type="submit" class="link">Sair</button>
+    </form>
+  </nav>
+</header>
+
+<div th:fragment="mensagens">
+  <p class="aviso sucesso" role="status" th:if="${sucesso}" th:text="${sucesso}"></p>
+  <p class="aviso erro" role="alert" th:if="${erro}" th:text="${erro}"></p>
+</div>
+
+</body>
+</html>
