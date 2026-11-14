@@ -1,0 +1,16 @@
+# Sobe o PostgreSQL usado pela aplicação:  docker compose up -d
+services:
+  db:
+    image: postgres:16
+    container_name: multiloja-db
+    environment:
+      POSTGRES_DB: multiloja
+      POSTGRES_USER: multiloja
+      POSTGRES_PASSWORD: multiloja
+    ports:
+      - "5432:5432"
+    volumes:
+      - multiloja-dados:/var/lib/postgresql/data
+
+volumes:
+  multiloja-dados:
